@@ -1,0 +1,736 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>vue组件化编程 | 西瓜太郎没有瓜</title><meta name="description" content="模块与组件和模块化与组件化的理解模块 理解: 向外提供特定功能的 js 程序, 一般就是一个 js 文件 为什么: js 代码更多更复杂 作用: 复用 js, 简化 js 的编写, 提高 js 运行效率  组件 理解: 用来实现特定(局部)界面功能效果的代码集合(html&#x2F;css&#x2F;js&#x2F;image) 为什么: 一个界面的功能很复杂 作用: 复用编码, 简化项目编码, 提高运行效率  模块化当应用的"><meta name="keywords" content="vue"><meta name="author" content="HymSoCute"><meta name="copyright" content="HymSoCute"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://yoursite.com/2020/08/21/vue%E7%BB%84%E4%BB%B6%E5%8C%96%E7%BC%96%E7%A8%8B/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="vue组件化编程"><meta property="og:url" content="http://yoursite.com/2020/08/21/vue%E7%BB%84%E4%BB%B6%E5%8C%96%E7%BC%96%E7%A8%8B/"><meta property="og:site_name" content="西瓜太郎没有瓜"><meta property="og:description" content="模块与组件和模块化与组件化的理解模块 理解: 向外提供特定功能的 js 程序, 一般就是一个 js 文件 为什么: js 代码更多更复杂 作用: 复用 js, 简化 js 的编写, 提高 js 运行效率  组件 理解: 用来实现特定(局部)界面功能效果的代码集合(html&#x2F;css&#x2F;js&#x2F;image) 为什么: 一个界面的功能很复杂 作用: 复用编码, 简化项目编码, 提高运行效率  模块化当应用的"><meta property="og:image" content="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3144079972,143380435&amp;fm=26&amp;gp=0.jpg"><meta property="article:published_time" content="2020-08-21T08:14:47.000Z"><meta property="article:modified_time" content="2020-08-21T08:18:20.165Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="Vue 核心" href="http://yoursite.com/2020/08/09/vue%E6%A0%B8%E5%BF%83/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-08-21 16:18:20'
+}</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sviptzk/StaticFile_HEXO@latest/butterfly/css/iconfont.min.css"><link rel="stylesheet" href="./source/css/index.css"><link rel="stylesheet" href="./source/css/pool.css"><link rel="stylesheet" href="./source/css/background.css"><meta name="generator" content="Hexo 4.2.1"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/head.JPG'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">7</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">4</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-icon_search"></i><span> 搜索</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw iconfont icon-icon_study"></i><span> 找文章</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_invite_fill"></i><span> 整理</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw iconfont icon-icon_file_fill"></i><span> 分类</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 放轻松</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-link"></i><span> 技术贴</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_group"></i><span> 大佬</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_star"></i><span> 收藏</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-heart"></i><span> 关注我</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_synergy_fill"></i><span> 留言板</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_task"></i><span> 旅行瓜</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_study"></i><span> 学习瓜</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_im_face"></i><span> 回忆瓜</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw iconfont icon-icon_gift"></i><span> 想要吗？</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_photo_fill"></i><span> 图片</span></a></li></ul></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#模块与组件和模块化与组件化的理解"><span class="toc-number">1.</span> <span class="toc-text">模块与组件和模块化与组件化的理解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#模块"><span class="toc-number">1.1.</span> <span class="toc-text">模块</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组件"><span class="toc-number">1.2.</span> <span class="toc-text">组件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模块化"><span class="toc-number">1.3.</span> <span class="toc-text">模块化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组件化"><span class="toc-number">1.4.</span> <span class="toc-text">组件化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组件的使用"><span class="toc-number">1.5.</span> <span class="toc-text">组件的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#局部组件的使用"><span class="toc-number">1.5.1.</span> <span class="toc-text">局部组件的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全局组件的使用"><span class="toc-number">1.5.2.</span> <span class="toc-text">全局组件的使用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Vue-脚手架"><span class="toc-number">2.</span> <span class="toc-text">Vue 脚手架</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#webpack"><span class="toc-number">2.1.</span> <span class="toc-text">webpack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#webpack-处理资源"><span class="toc-number">2.2.</span> <span class="toc-text">webpack 处理资源</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#vue-项目"><span class="toc-number">3.</span> <span class="toc-text">vue 项目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#src-文件下有一个-App-vue"><span class="toc-number">3.1.</span> <span class="toc-text">src 文件下有一个 App.vue</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#index-js"><span class="toc-number">3.2.</span> <span class="toc-text">index.js</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#组件化编码流程（开发代码套路）"><span class="toc-number">3.3.</span> <span class="toc-text">组件化编码流程（开发代码套路）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#组件间通信"><span class="toc-number">4.</span> <span class="toc-text">组件间通信</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-props"><span class="toc-number">4.1.</span> <span class="toc-text">1: props</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用组件标签时"><span class="toc-number">4.1.1.</span> <span class="toc-text">使用组件标签时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#定义-MyComponent-时"><span class="toc-number">4.1.2.</span> <span class="toc-text">定义 MyComponent 时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-number">4.1.3.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-vue-自定义事件"><span class="toc-number">4.2.</span> <span class="toc-text">2: vue 自定义事件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原生-DOM-事件"><span class="toc-number">4.2.1.</span> <span class="toc-text">原生 DOM 事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vue-自定义事件"><span class="toc-number">4.2.2.</span> <span class="toc-text">vue 自定义事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结-1"><span class="toc-number">4.2.3.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-全局事件总线"><span class="toc-number">4.3.</span> <span class="toc-text">3: 全局事件总线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#理解"><span class="toc-number">4.3.1.</span> <span class="toc-text">理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-中全局事件总线-语法分析"><span class="toc-number">4.3.2.</span> <span class="toc-text">Vue 中全局事件总线_语法分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Vue-中全局事件总线-流程分析"><span class="toc-number">4.3.3.</span> <span class="toc-text">Vue 中全局事件总线_流程分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定事件总线对象"><span class="toc-number">4.3.4.</span> <span class="toc-text">指定事件总线对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#绑定事件监听"><span class="toc-number">4.3.5.</span> <span class="toc-text">绑定事件监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分发事件监听"><span class="toc-number">4.3.6.</span> <span class="toc-text">分发事件监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解绑事件监听"><span class="toc-number">4.3.7.</span> <span class="toc-text">解绑事件监听</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结-2"><span class="toc-number">4.3.8.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-消息订阅发布机制"><span class="toc-number">4.4.</span> <span class="toc-text">4. 消息订阅发布机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-插槽-slot-方式"><span class="toc-number">4.5.</span> <span class="toc-text">5. 插槽(slot 方式)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#默认插槽（没有名称的插槽）"><span class="toc-number">4.5.1.</span> <span class="toc-text">默认插槽（没有名称的插槽）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具名-命名插槽"><span class="toc-number">4.5.2.</span> <span class="toc-text">具名&#x2F;命名插槽</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#作用域插槽"><span class="toc-number">4.5.3.</span> <span class="toc-text">作用域插槽</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-vuex-后面单独讲"><span class="toc-number">4.6.</span> <span class="toc-text">6. vuex(后面单独讲)</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><div id="web_bg" data-type="color"></div><header class="post-bg" id="page-header" style="background-image: url(https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3144079972,143380435&amp;fm=26&amp;gp=0.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">西瓜太郎没有瓜</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw iconfont icon-icon_search"></i><span> 搜索</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw iconfont icon-icon_study"></i><span> 找文章</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_invite_fill"></i><span> 整理</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw iconfont icon-icon_file_fill"></i><span> 分类</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 放轻松</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-link"></i><span> 技术贴</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_group"></i><span> 大佬</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_star"></i><span> 收藏</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-heart"></i><span> 关注我</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_synergy_fill"></i><span> 留言板</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_task"></i><span> 旅行瓜</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_study"></i><span> 学习瓜</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw iconfont icon-icon_im_face"></i><span> 回忆瓜</span></a></li></ul></div><div class="menus_item"><a class="site-page"><i class="fa-fw iconfont icon-icon_gift"></i><span> 想要吗？</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw iconfont icon-icon_photo_fill"></i><span> 图片</span></a></li></ul></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">vue组件化编程</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-08-21 16:14:47"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-08-21</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-08-21 16:18:20"><i class="fas fa-history fa-fw"></i> 更新于 2020-08-21</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/vue%E5%85%A8%E5%AE%B6%E6%A1%B6/">vue全家桶</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h1 id="模块与组件和模块化与组件化的理解"><a href="#模块与组件和模块化与组件化的理解" class="headerlink" title="模块与组件和模块化与组件化的理解"></a>模块与组件和模块化与组件化的理解</h1><h2 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h2><ol>
+<li>理解: 向外提供特定功能的 js 程序, 一般就是一个 js 文件</li>
+<li>为什么: js 代码更多更复杂</li>
+<li>作用: 复用 js, 简化 js 的编写, 提高 js 运行效率</li>
+</ol>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><ol>
+<li>理解: 用来实现特定(局部)界面功能效果的代码集合(html/css/js/image)</li>
+<li>为什么: 一个界面的功能很复杂</li>
+<li>作用: 复用编码, 简化项目编码, 提高运行效率</li>
+</ol>
+<h2 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h2><p>当应用的 js 都以模块来编写的, 这个应用就是一个模块化的应用</p>
+<h2 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h2><p>当应用是以多组件的方式实现, 这个应用就是一个组件化的应用, 应用的开发方式就是组件化的</p>
+<h2 id="组件的使用"><a href="#组件的使用" class="headerlink" title="组件的使用"></a>组件的使用</h2><ol>
+<li>局部组件：只在当前组件内部使用</li>
+<li>全局组件：全局共享，任何组件都可以使用</li>
+<li>父子组件：</li>
+</ol>
+<p><span style="color:red">面试题：为什么组件中的 data 必须是函数形式？</span><br><span style="color:red">Vue 解析组件标签时，会找到组件的构造函数，创建组件实例对象，根据实例对象的内容进行显示;有三个组件标签，就会创建三个组件实例对象;此时，如果 data 使用的是对象形式，那么创建组件实例对象，进行数据代理，三个组件实例对象代理的 data 数据是同一个对象。那么只要有一个变化，全都变（不 OK）</span><br><span style="color:red">每个组件应该要单独使用自己的数据。所以 data 要使用函数。那么创建组件实例对象，进行数据代理，会调用 data 函数得到新 data 对象从而进行数据代理;每一个组件实例对象得到的是新的对象，互不影响</span></p>
+<h3 id="局部组件的使用"><a href="#局部组件的使用" class="headerlink" title="局部组件的使用"></a>局部组件的使用</h3><p>声子 挂子 用子</p>
+<ul>
+<li>局部入口组件的声明（首字母大写）<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> App = &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">            &lt;div&gt;</span></span><br><span class="line"><span class="string">                我是入口组件</span></span><br><span class="line"><span class="string">            &lt;/div&gt;</span></span><br><span class="line"><span class="string">        `</span>,</span><br><span class="line">  components: &#123;</span><br><span class="line">    Vheader,</span><br><span class="line">    Vaside,</span><br><span class="line">    Vcontent,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>挂载子组件</li>
+<li>父组件的使用</li>
+</ul>
+<ul>
+<li>组件的创建</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>,</span><br><span class="line">  data() &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;&#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//挂载子组件</span></span><br><span class="line">  components: &#123;</span><br><span class="line">    App,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//父组件直接可以使用</span></span><br><span class="line">  template: <span class="string">"&lt;App/&gt;"</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="全局组件的使用"><a href="#全局组件的使用" class="headerlink" title="全局组件的使用"></a>全局组件的使用</h3><h1 id="Vue-脚手架"><a href="#Vue-脚手架" class="headerlink" title="Vue 脚手架"></a>Vue 脚手架</h1><h2 id="webpack"><a href="#webpack" class="headerlink" title="webpack"></a>webpack</h2><p>一个现代 JavaScript 应用程序的静态模块打包工具</p>
+<ol>
+<li>5 个核心概念</li>
+</ol>
+<ul>
+<li>入口 entry<ul>
+<li>指示以哪个文件开始打包</li>
+<li>注意：以入口文件为起点，构建依赖关系图，将所有依赖的文件全部打包进来</li>
+</ul>
+</li>
+<li>输出 output<ul>
+<li>打包后资源输出到哪里去</li>
+</ul>
+</li>
+<li>加载器 loader<ul>
+<li>webpack 工具本身只能打包 js、json 资源，其他资源打包不了</li>
+<li>需要借助 loader 解析其他资源，webpack 才能打包这些其他资源</li>
+</ul>
+</li>
+<li>插件 plugins<ul>
+<li>执行更加强大的任务（相对 loader 来讲）</li>
+</ul>
+</li>
+<li>模式 mode<ul>
+<li>开发模式 development</li>
+<li>生产模式 production<ul>
+<li>相同点：都能解析 ES6 模块化</li>
+<li>不同点：production 多一个压缩 JS 代码</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><p>基本使用</p>
+<ul>
+<li><p>初始化 package.json 文件</p>
+<ul>
+<li>npm init</li>
+<li>npm init -y</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"vue-cli"</span>, <span class="comment">// 包名</span></span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0.0"</span>, <span class="comment">// 包的版本号</span></span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="comment">// 启动指令</span></span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"xxx"</span>, <span class="comment">// npm start</span></span><br><span class="line">    <span class="attr">"dev"</span>: <span class="string">"xxx"</span>, <span class="comment">// npm run dev</span></span><br><span class="line">    <span class="attr">"build"</span>: <span class="string">"xxx"</span> <span class="comment">// npm run build</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;&#125;, <span class="comment">// 生产依赖</span></span><br><span class="line">  <span class="attr">"devDependencies"</span>: &#123;&#125; <span class="comment">// 开发依赖</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><span style="color:red">如果你把开发依赖的包下载到生产依赖会不会有问题？反之会不会有问题？</span><ul>
+<li><span style="color:red">不会影响任何功能。</span></li>
+<li><span style="color:red">生产依赖：项目运行时需要使用的依赖（vue，jquery）</span></li>
+<li><span style="color:red">开发依赖：webpack 构建打包需要使用的依赖（webpack，babel）</span></li>
+<li><span style="color:red">解决：直接重下（注意依赖）</span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>下载依赖包</p>
+<ul>
+<li>npm i webpack webpack-cli -D</li>
+</ul>
+</li>
+<li><p>定义 webpack 配置文件</p>
+<ul>
+<li>webpack.config.js</li>
+</ul>
+</li>
+<li><p>项目根目录</p>
+<ul>
+<li>配置文件就在项目根目录</li>
+<li>下载包也在项目根目录下</li>
+<li>启动 webpack 指令也是在项目根目录</li>
+<li>哪个目录是项目根目录？<ul>
+<li>包含整个项目的最近的目录（package.json 文件所在的目录）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><p>webpack 的配置文件</p>
+<ul>
+<li>所有 JS 构建工具都是基于 NODEJS 工作的，所以模块化默认使用 commonjs</li>
+<li>使用 commonjs 模块化语法向外暴露一个配置对象（属性名固定的对象）</li>
+<li>里面配置不能写错，一旦写错单词就会报错（代码写完检查一遍~）</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// 入口</span></span><br><span class="line">  entry: <span class="string">""</span>,</span><br><span class="line">  <span class="comment">// 输出</span></span><br><span class="line">  output: &#123;&#125;,</span><br><span class="line">  <span class="comment">// 加载器</span></span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [],</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 插件</span></span><br><span class="line">  plugins: [],</span><br><span class="line">  <span class="comment">// 模式</span></span><br><span class="line">  mode: <span class="string">""</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>开发环境：让代码在内存中编译运行即可，没有输出文件到本地</li>
+<li>生产环境：输出打包后的资源文件到本地</li>
+</ul>
+<h2 id="webpack-处理资源"><a href="#webpack-处理资源" class="headerlink" title="webpack 处理资源"></a>webpack 处理资源</h2><ol>
+<li>处理 js 资源</li>
+</ol>
+<ul>
+<li>babel 一个 JavaScript 编译器</li>
+<li>可以将 ES6 以上语法编译成 ES5 以下语法~，作用用来做 JS 兼容性处理<ul>
+<li>下载依赖包（loader 只需要下载不需要引入）<br><code>npm i babel-loader @babel/core @babel/preset-env -D</code></li>
+<li>配置 loader<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">  <span class="comment">// exclude: /node_modules/,</span></span><br><span class="line">  include: [resolve(<span class="string">'src'</span>)],</span><br><span class="line">  use: &#123;</span><br><span class="line">    loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      presets: [<span class="string">"@babel/preset-env"</span>],</span><br><span class="line">      plugins: [],</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><p>处理 css 资源</p>
+<ul>
+<li>下载依赖包（loader 只需要下载不需要引入）<br><code>npm i style-loader css-loader -D</code></li>
+<li>配置 loader<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">  include: [resolve(<span class="string">"src"</span>)],</span><br><span class="line">  use: [</span><br><span class="line">    <span class="string">"style-loader"</span>,</span><br><span class="line">    <span class="string">"css-loader"</span>,</span><br><span class="line">  ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>处理图片资源</p>
+<ul>
+<li>下载依赖包（loader 只需要下载不需要引入）<br><code>npm i url-loader file-loader -D</code></li>
+<li>配置 loader<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: <span class="regexp">/\.(png|gif|jpe?g|webp)$/</span>,</span><br><span class="line">  include: [resolve(<span class="string">"src"</span>)],</span><br><span class="line">  use: &#123;</span><br><span class="line">    loader: <span class="string">"url-loader"</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      limit: <span class="number">10</span> * <span class="number">1024</span>,</span><br><span class="line">      name: <span class="string">"static/media/[hash:10].[ext]"</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>处理 html 资源</p>
+<ul>
+<li><p>下载依赖包(plugins 既需要下载也需要引入)<br><code>npm i html-webpack-plugin -D</code><br> <code>const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;);</code></p>
+</li>
+<li><p>配置 plugin</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">  template: resolve(<span class="string">"public/index.html"</span>),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>处理其他资源（字体图标~）</p>
+</li>
+</ol>
+<ul>
+<li>下载依赖包<br><code>npm i file-loader -D</code><br>(之前处理图片资源时，已经下载过了，所以不需要重新下载)</li>
+<li>配置 loader<br><code>js { exclude: [/\.js$/, /\.css$/, /\.html$/, /\.(png|gif|jpe?g|webp)$/, /\.vue$/], use: { loader: &quot;file-loader&quot;, options: { name: &quot;static/media/[hash:10].[ext]&quot;, }, }, },</code></li>
+</ul>
+<ol start="6">
+<li>自动化</li>
+</ol>
+<ul>
+<li>概念：<ul>
+<li>一旦修改源代码，会自动编译，接着自动刷新浏览器，从而看到最新的效果</li>
+<li>第一次使用时，自动打开浏览器访问<br> （自动编译、自动刷新、自动打开浏览器等自动化任务）<br>如果没有自动化，每次写完代码，都需要重新编译打包刷新<br>有了自动化，自动编译打包刷新，我们开发者只需要看浏览器最新的结果就好了</li>
+</ul>
+</li>
+<li>作用：提升开发效率</li>
+<li>下载依赖包<br><code>npm i webpack-dev-server -D</code></li>
+<li>配置<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  contentBase: resolve(<span class="string">"dist"</span>),</span><br><span class="line">  port: <span class="number">9527</span>,</span><br><span class="line">  host: <span class="string">"localhost"</span>,</span><br><span class="line">  compress: <span class="literal">true</span>,</span><br><span class="line">  open: <span class="literal">true</span>,</span><br><span class="line">  hot: <span class="literal">true</span>,</span><br><span class="line">  quiet: <span class="literal">true</span>,</span><br><span class="line">  clientLogLevel: <span class="string">"none"</span>,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure></li>
+<li>启动指令<ul>
+<li>webpack 一定会有输出资源（输出到配置文件 output.path 去），不能启用 devServer 配置</li>
+<li>webpack-dev-server 只在内存中编译打包，不会有任何输出，同时能启用 devServer 配置</li>
+</ul>
+</li>
+<li>配置启动指令<br>在 package.json 中配置启动指令<br><code>js &quot;scripts&quot;: { &quot;dev&quot;: &quot;webpack-dev-server&quot;, // 代表启动开发环境指令 &quot;start&quot;: &quot;npm run dev&quot; // 为了简写，npm start }</code></li>
+</ul>
+<ol start="7">
+<li>devtool 开发调试工具</li>
+</ol>
+<ul>
+<li><p>source-map：提供构建后代码与源码映射关系文件</p>
+<ul>
+<li>所有代码（HTML/CSS/JS）经过 webpack 编译打包处理，</li>
+<li>默认情况下会将所有 js 以 eval 方式汇总在一个 js 文件（built.js）中，后面实际运行就是这个文件 built.js</li>
+<li>一旦代码报错，正常情况下报错提示的是 built.js 代码错误，开发者不知道到底出了什么错误，不利于调试 BUG</li>
+<li>浏览器支持 source-map 技术，在 webpack 打包时会生成一个 built.js.map 文件，这个文件就会将构建后代码和源码的关系记录起来（源代码在哪个文件第一行 对应 构建后代码第几行）</li>
+<li>如果构建后 built.js 代码出错了，浏览器会找到 built.js.map 文件，根据构建后错误位置，通过 built.js.map 文件， 就能追踪到源码的错误，从而浏览器提示源码的错误，方便调试</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>配置</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">devtool: <span class="string">"cheap-module-source-map"</span>, <span class="comment">// 开发环境</span></span><br><span class="line">devtool: <span class="string">"source-map"</span>, <span class="comment">// 生产环境</span></span><br><span class="line"></span><br><span class="line">source-map 提供完整代码映射（包括行和列）</span><br><span class="line">cheap-source-map 提供简版代码映射（只包含行，没有列）</span><br><span class="line"><span class="built_in">module</span>-source-map 提供node_modules中代码映射</span><br><span class="line">cheap-<span class="built_in">module</span>-source-map</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li><p>进行 vue 配置（让 webpack 能够解析 vue 资源）<br><a href="https://vue-loader.vuejs.org/zh/guide/#vue-cli" target="_blank" rel="noopener">https://vue-loader.vuejs.org/zh/guide/#vue-cli</a></p>
+<ul>
+<li><p>下载<br><code>npm install -D vue-loader vue-template-compiler</code></p>
+<ul>
+<li>vue-loader 处理 vue 文件</li>
+<li>vue-template-compiler 编译 vue 组件模板代码</li>
+</ul>
+</li>
+<li><p>配置</p>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> VueLoaderPlugin = <span class="built_in">require</span>(<span class="string">"vue-loader/lib/plugin"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      <span class="comment">// ... 其它规则</span></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">"vue-loader"</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        use: [<span class="string">"vue-style-loader"</span>, <span class="string">"css-loader"</span>],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="comment">// 请确保引入这个插件！</span></span><br><span class="line">    <span class="keyword">new</span> VueLoaderPlugin(),</span><br><span class="line">  ],</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>打包 public 下面的静态资源<a href="https://www.npmjs.com/package/copy-webpack-plugin" target="_blank" rel="noopener">https://www.npmjs.com/package/copy-webpack-plugin</a></li>
+</ol>
+<ul>
+<li>下载<br><code>npm install copy-webpack-plugin --save-dev</code></li>
+<li>引入<br><code>const CopyPlugin = require(&#39;copy-webpack-plugin&#39;);</code></li>
+<li>配置</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> CopyPlugin([</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">from</span>: resolve(<span class="string">'public'</span>),</span><br><span class="line">    to: resolve(<span class="string">'dist'</span>),</span><br><span class="line">    ignore: [<span class="string">'index.html'</span>]</span><br><span class="line">  &#125;,</span><br><span class="line">]),</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Nodejs的模块 path 专门用来处理文件路径</span></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">"path"</span>);</span><br><span class="line"><span class="comment">// 引入插件</span></span><br><span class="line"><span class="keyword">const</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">"html-webpack-plugin"</span>);</span><br><span class="line"><span class="keyword">const</span> VueLoaderPlugin = <span class="built_in">require</span>(<span class="string">"vue-loader/lib/plugin"</span>);</span><br><span class="line"><span class="keyword">const</span> CopyPlugin = <span class="built_in">require</span>(<span class="string">"copy-webpack-plugin"</span>);</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 封装一个处理绝对路径的方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;String&#125;</span> </span>relative 相对路径</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;String&#125;</span> </span>基于项目根目录的绝对路径</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">resolve</span>(<span class="params">relative</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// __dirname 代表当前文件所在的文件夹绝对路径</span></span><br><span class="line">  <span class="comment">// __dirname 其实就是项目根目录</span></span><br><span class="line">  <span class="keyword">return</span> path.resolve(__dirname, relative);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">// 入口</span></span><br><span class="line">  entry: <span class="string">"./src/index.js"</span>,</span><br><span class="line">  <span class="comment">// 输出</span></span><br><span class="line">  output: &#123;</span><br><span class="line">    path: <span class="literal">undefined</span>, <span class="comment">// 输出的目录</span></span><br><span class="line">    filename: <span class="string">"built.js"</span>, <span class="comment">// 输出文件名</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 加载器</span></span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">        loader: <span class="string">"vue-loader"</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.js$/</span>, <span class="comment">// 规则对哪些文件生效</span></span><br><span class="line">        <span class="comment">// exclude: /node_modules/, // 排除node_modules文件，其他文件都检查</span></span><br><span class="line">        include: [resolve(<span class="string">"src"</span>)], <span class="comment">// 包含src下面的文件，只检查包含的文件，而其他文件不检查</span></span><br><span class="line">        <span class="comment">// use: &#123;&#125;, 如果只要使用一个loader 用&#123;&#125;</span></span><br><span class="line">        <span class="comment">// use: []  如果要使用多个loader 用[]</span></span><br><span class="line">        use: &#123;</span><br><span class="line">          <span class="comment">// 需要下载</span></span><br><span class="line">          loader: <span class="string">"babel-loader"</span>,</span><br><span class="line">          options: &#123;</span><br><span class="line">            <span class="comment">// 配置对象</span></span><br><span class="line">            presets: [<span class="string">"@babel/preset-env"</span>], <span class="comment">// 预设，babel要干什么活</span></span><br><span class="line">            plugins: [], <span class="comment">// 插件</span></span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">        include: [resolve(<span class="string">"src"</span>)],</span><br><span class="line">        use: [</span><br><span class="line">          <span class="comment">// 执行顺序：从下到上 / 从右到左</span></span><br><span class="line">          <span class="comment">// 动态创建style标签，将js中css字符串添加，插入head中显示</span></span><br><span class="line">          <span class="comment">// "style-loader",</span></span><br><span class="line"></span><br><span class="line">          <span class="comment">// 它会应用到普通的 `.css` 文件</span></span><br><span class="line">          <span class="comment">// 以及 `.vue` 文件中的 `&lt;style&gt;` 块</span></span><br><span class="line">          <span class="string">"vue-style-loader"</span>,</span><br><span class="line">          <span class="comment">// 将css编译成js字符串，以commonjs规则插入到js文件中</span></span><br><span class="line">          <span class="string">"css-loader"</span>,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|gif|jpe?g|webp)$/</span>,</span><br><span class="line">        include: [resolve(<span class="string">"src"</span>)],</span><br><span class="line">        use: &#123;</span><br><span class="line">          loader: <span class="string">"url-loader"</span>,</span><br><span class="line">          options: &#123;</span><br><span class="line">            limit: <span class="number">10</span> * <span class="number">1024</span>,</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">              对输出文件进行重命名</span></span><br><span class="line"><span class="comment">              [hash:10] hash（根据文件生成唯一id值）取10位</span></span><br><span class="line"><span class="comment">              [ext] 使用原来文件扩展名</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">            name: <span class="string">"static/media/[hash:10].[ext]"</span>,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="comment">// test: //,  // 不写test，代表匹配所有文件</span></span><br><span class="line">        exclude: [</span><br><span class="line">          /\.js$/,</span><br><span class="line">          /\.css$/,</span><br><span class="line">          /\.html$/,</span><br><span class="line">          /\.(png|gif|jpe?g|webp)$/,</span><br><span class="line">          /\.vue$/,</span><br><span class="line">        ],</span><br><span class="line">        use: &#123;</span><br><span class="line">          <span class="comment">// 作用：将文件加载，原封不动输出出去(只修改名称)</span></span><br><span class="line">          <span class="comment">// 能处理所有类型文件</span></span><br><span class="line">          loader: <span class="string">"file-loader"</span>,</span><br><span class="line">          options: &#123;</span><br><span class="line">            name: <span class="string">"static/media/[hash:10].[ext]"</span>,</span><br><span class="line">          &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 插件</span></span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">      <span class="comment">// 配置对象</span></span><br><span class="line">      <span class="comment">// 以 public/index.html 文件为模板，创建基于这个文件的新HTML文件</span></span><br><span class="line">      <span class="comment">// 新HTML文件会自动引入webpack打包生成JS/CSS</span></span><br><span class="line">      template: resolve(<span class="string">"public/index.html"</span>),</span><br><span class="line">    &#125;),</span><br><span class="line">    <span class="comment">// 它的职责是将你定义过的其它规则复制并应用到 .vue 文件里相应语言的块。</span></span><br><span class="line">    <span class="comment">// 例如，如果你有一条匹配 /\.js$/ 的规则，那么它会应用到 .vue 文件里的 &lt;script&gt; 块。</span></span><br><span class="line">    <span class="keyword">new</span> VueLoaderPlugin(),</span><br><span class="line">    <span class="comment">// 复制文件</span></span><br><span class="line">    <span class="keyword">new</span> CopyPlugin([</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">from</span>: resolve(<span class="string">"public"</span>), <span class="comment">// 将public下面的所有文件复制</span></span><br><span class="line">        to: resolve(<span class="string">"dist"</span>), <span class="comment">// 复制到dist目录下去</span></span><br><span class="line">        ignore: [<span class="string">"index.html"</span>], <span class="comment">// 复制时忽略index.html文件（这个文件已经被HtmlWebpackPlugin处理了）</span></span><br><span class="line">      &#125;,</span><br><span class="line">    ]),</span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">// 模式</span></span><br><span class="line">  mode: <span class="string">"development"</span>,</span><br><span class="line">  <span class="comment">// 自动化，开发服务器</span></span><br><span class="line">  devServer: &#123;</span><br><span class="line">    <span class="comment">// contentBase: resolve('build'), // 开发服务器将哪个目录的资源暴露出去</span></span><br><span class="line">    contentBase: resolve(<span class="string">"dist"</span>), <span class="comment">// 开发服务器将哪个目录的资源暴露出去</span></span><br><span class="line">    port: <span class="number">9527</span>, <span class="comment">// 服务器端口号</span></span><br><span class="line">    host: <span class="string">"localhost"</span>, <span class="comment">// 服务器域名,</span></span><br><span class="line">    <span class="comment">// 启动gzip压缩（一种资源压缩格式gzip，这种压缩格式）</span></span><br><span class="line">    <span class="comment">// 这种压缩格式浏览器可以识别，所以可以自动解压（反观zip文件浏览器是不识别，也不能解压的）</span></span><br><span class="line">    <span class="comment">// 资源会在服务器先进行gzip压缩，文件体积就更小，传输速度就更快。性能更好</span></span><br><span class="line">    compress: <span class="literal">true</span>,</span><br><span class="line">    open: <span class="literal">true</span>, <span class="comment">// 自动打开浏览器</span></span><br><span class="line">    <span class="comment">// 热模块替换（Hot Module Replacement）</span></span><br><span class="line">    <span class="comment">// 正常没有HMR功能，一旦有一个文件发生变化，整个页面会全部重新渲染</span></span><br><span class="line">    <span class="comment">//（假设我有10000个文件，因为其中一个文件变化，导致所有文件全部重新编译加载更新，性能很差）</span></span><br><span class="line">    <span class="comment">// HMR功能：一旦有一个文件发生变化，只会更新这变化的文件，其他文件默认使用之前缓存，速度快，性能好</span></span><br><span class="line">    <span class="comment">// html文件在将来开发时只有一个，所以不需要HMR功能</span></span><br><span class="line">    <span class="comment">// css文件，因为使用style-loader处理，默认使用HMR功能</span></span><br><span class="line">    <span class="comment">// js文件，默认是没有使用HMR（即使开启了HMR，也需要手动写其他代码才可以使用）</span></span><br><span class="line">    hot: <span class="literal">true</span>,</span><br><span class="line">    quiet: <span class="literal">true</span>, <span class="comment">// 启用静默模式，在终端不打印多余信息</span></span><br><span class="line">    clientLogLevel: <span class="string">"none"</span>, <span class="comment">// 在浏览器控制台不打印多余内容</span></span><br><span class="line">  &#125;,</span><br><span class="line">  devtool: <span class="string">"cheap-module-source-map"</span>, <span class="comment">// 开发环境</span></span><br><span class="line">  <span class="comment">// devtool: "source-map", // 生产环境</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><span style="color:#345">大小小于 10kb 以下的图片会被 base64 处理</span><br><span style="color:#345">base64:</span></p>
+<ol>
+<li><span style="color:#345">一种图片的优化手段（只针对小图片做优化）</span></li>
+<li><span style="color:#345">将图片编译成 base64 编码的字符串</span><ul>
+<li><span style="color:#345">优点：随着 html 文件加载一起加载，不需要额外发送请求（减少请求数量，降低服务器压力）</span></li>
+<li><span style="color:#345">缺点：体积会变得更大</span></li>
+</ul>
+</li>
+</ol>
+<h1 id="vue-项目"><a href="#vue-项目" class="headerlink" title="vue 项目"></a>vue 项目</h1><ul>
+<li>public 下面必有 index.html 作为打包的 html 文件</li>
+<li>src 下面必有 index.js 是 webpack 打包的入口文件</li>
+</ul>
+<h2 id="src-文件下有一个-App-vue"><a href="#src-文件下有一个-App-vue" class="headerlink" title="src 文件下有一个 App.vue"></a>src 文件下有一个 App.vue</h2><p>是组件 vue 项目默认，这个组件：应用主组件/根组件；</p>
+<ul>
+<li>组件里面有三个标签：<ul>
+<li>template 模板页面：里面写模板代码<br><span style="color:red">注意：必须有且只有一个根标签</span></li>
+<li>script 组件配置对象：里面写 js 代码 - 使用 ES6 模块化语法，向外暴露一个组件配置对象: data\methods\watch\computed…<br><code>export default {}</code></li>
+<li>style 模板样式（组件样式）：里面写 css 代码</li>
+</ul>
+</li>
+</ul>
+<h2 id="index-js"><a href="#index-js" class="headerlink" title="index.js"></a>index.js</h2><p>src 下面必有 index.js 是 webpack 打包的入口文件.开发前端/客户端代码，使用都是 ES6 模块化.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">"vue"</span>; <span class="comment">// npm i vue</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 引入App组件</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">"./App"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Hello <span class="keyword">from</span> <span class="string">"@comps/HelloWorld"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局注册一个组件</span></span><br><span class="line">Vue.component(<span class="string">"Hello"</span>, Hello);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  <span class="comment">// 内部会创建App组件实例对象，并渲染到 "#app" 元素上</span></span><br><span class="line">  render: <span class="function">(<span class="params">h</span>) =&gt;</span> h(App),</span><br><span class="line">  <span class="comment">// 去public/index.html中找</span></span><br><span class="line">&#125;).$mount(<span class="string">"#app"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// new Vue(&#123;</span></span><br><span class="line"><span class="comment">//   components: &#123;</span></span><br><span class="line"><span class="comment">//     App, // 注册App组件</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   template: "&lt;App /&gt;", // 内部渲染App组件内容</span></span><br><span class="line"><span class="comment">// &#125;).$mount("#app");</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">  上面写法是下面的简写：</span></span><br><span class="line"><span class="comment">    下面没办法直接使用，会报错：</span></span><br><span class="line"><span class="comment">    [Vue warn]: You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build.</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    原因：当前使用Vue的版本是运行时版本（vue.runtime.esm.js）, 这个版本没有编译器</span></span><br><span class="line"><span class="comment">    没有编译器就不能解析template，所以报错</span></span><br><span class="line"><span class="comment">    解决：</span></span><br><span class="line"><span class="comment">      1. 使用render方法去对 template 进行预解析 (推荐使用，体积更小)</span></span><br><span class="line"><span class="comment">      （内部使用 vue-template-compiler 去编译template）</span></span><br><span class="line"><span class="comment">      1. 使用带编译器的vue版本 （体积更大）</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">      https://cn.vuejs.org/v2/guide/installation.html#%E5%AF%B9%E4%B8%8D%E5%90%8C%E6%9E%84%E5%BB%BA%E7%89%88%E6%9C%AC%E7%9A%84%E8%A7%A3%E9%87%8A</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="组件化编码流程（开发代码套路）"><a href="#组件化编码流程（开发代码套路）" class="headerlink" title="组件化编码流程（开发代码套路）"></a>组件化编码流程（开发代码套路）</h2><ol>
+<li>拆分组件</li>
+</ol>
+<ul>
+<li><p>根据用户页面功能或者变化来拆分组件</p>
+<ul>
+<li>用户页面功能：JS 交互功能</li>
+<li>用户页面变化：用户界面更新变化</li>
+</ul>
+</li>
+<li><p>App</p>
+<ul>
+<li>AddComment</li>
+<li>CommentList<ul>
+<li>CommnetItem</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li>实现静态组件</li>
+</ol>
+<ul>
+<li><p>实现前面拆分组件的静态结构和样式，JS 功能先不写</p>
+</li>
+<li><p>忽略结构样式，去课件 Vue 全家桶\代码\静态页面\comment_page</p>
+</li>
+</ul>
+<ol start="3">
+<li>实现动态组件</li>
+</ol>
+<ul>
+<li><p>初始化 data 数据的问题</p>
+<ul>
+<li>要不要定义 data 数据？页面有没有变化/更新</li>
+<li>数据类型：[{id: 1, name: ‘xx’, content: ‘xxx’}]</li>
+<li>数据名称：comments / commentList</li>
+<li>数据保存在哪个组件? App<ul>
+<li>如果数据只有一个组件使用，就定义在这个组件内容</li>
+<li>如果数据由多个组件使用，就定义在多个组件的公共父组件中</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>完成功能</p>
+<ul>
+<li>实现初始化数据显示</li>
+<li>实现 JS 交互功能（添加数据/更新数据/删除数据…）</li>
+</ul>
+</li>
+<li><p>父组件如何向子组件传递数据</p>
+<ul>
+<li><p>props（标签属性）：通过标签属性方式传递数据</p>
+<ul>
+<li>特点：props 是父组件传递数据给子组件，子组件只能读取使用，不应该直接修改</li>
+</ul>
+</li>
+<li><p>父组件定义 data 数据 <code>{comments: [{}, {}]}</code></p>
+</li>
+<li><p>父组件给子组件指定标签属性：<code>&lt;CommentList :comments=&quot;comments&quot; /&gt;</code></p>
+</li>
+<li><p>子组件声明接受标签属性（声明接受之后，子组件实例对象就直接拥有这个属性）</p>
+</li>
+<li><p>子组件声明接受标签属性方式：</p>
+<ul>
+<li><p>数组形式<br><code>props: [&#39;prop1&#39;, &#39;prop2&#39;]</code></p>
+</li>
+<li><p>对象形式</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">props: &#123;</span><br><span class="line">prop1: <span class="built_in">Object</span>,</span><br><span class="line">prop2: <span class="built_in">Array</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">props: &#123;</span><br><span class="line">prop1: &#123;</span><br><span class="line">type: <span class="built_in">Number</span>, <span class="comment">// 类型是 Number</span></span><br><span class="line"><span class="keyword">default</span>: <span class="number">0</span>, <span class="comment">// 默认值为 0</span></span><br><span class="line">required: <span class="literal">true</span>, <span class="comment">// 必须要传的属性（必要的）</span></span><br><span class="line">validator: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123; <span class="comment">// 校验函数</span></span><br><span class="line"><span class="keyword">return</span> value &gt;= <span class="number">0</span> <span class="comment">// 值必须大于 0</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>组件关于数据的 2 个重 ��� 问题</p>
+<ul>
+<li>数据定义在哪个组件<ul>
+<li>如果数据只有一个组件使用，就定义在这个组件内容</li>
+<li>如果数据由多个组件使用，就定义在多个组件的公共父组件中</li>
+</ul>
+</li>
+<li>更新数据的方法定义在哪个组件？<ul>
+<li>数据源在哪里，更新数据方法就定义在哪</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>父组件给子组件传递数据</p>
+<ul>
+<li>函数<ul>
+<li>例子：addComment/Function delComment/Function</li>
+<li>作用：子组件调用函数修改父组件数据（子组件传递数据给父组件 子 –&gt; 父）</li>
+</ul>
+</li>
+<li>非函数<ul>
+<li>例子：comments/Array comment/Object</li>
+<li>作用：父组件传递子组件直接显示使用（父组件传递数据给子组件 父 –&gt; 子）</li>
+<li>注意：子组件不应该直接修改数据，应该通过调用父组件的方法来修改</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h1><ol>
+<li><p>组件间通信基本原则</p>
+<ul>
+<li>不要在子组件中直接修改父组件的状态数据</li>
+<li>数据在哪, 更新数据的行为(函数)就应该定义在哪</li>
+</ul>
+</li>
+<li><p>组件之间的关系</p>
+<ul>
+<li>父子</li>
+<li>祖孙</li>
+<li>兄弟</li>
+<li>其它</li>
+</ul>
+</li>
+<li><p>vue 组件间通信方式</p>
+<ul>
+<li>props</li>
+<li>vue 的自定义事件</li>
+<li>全局事件总线</li>
+<li>消息订阅与发布</li>
+<li>slot</li>
+<li>vuex(后面单独讲)</li>
+</ul>
+</li>
+<li><p>总结组件间通信</p>
+<ul>
+<li>props<ul>
+<li>子 –&gt; 父</li>
+<li>父 –&gt; 子</li>
+</ul>
+</li>
+<li>自定义事件<ul>
+<li>子 –&gt; 父</li>
+</ul>
+</li>
+<li>全局事件总线<ul>
+<li>祖孙</li>
+<li>兄弟</li>
+</ul>
+</li>
+<li>消息订阅发布<ul>
+<li>祖孙</li>
+<li>兄弟</li>
+</ul>
+</li>
+<li>插槽<ul>
+<li>父 –&gt; 子</li>
+<li>传递标签数据</li>
+</ul>
+</li>
+<li>vuex（后面讲）</li>
+</ul>
+</li>
+</ol>
+<h2 id="1-props"><a href="#1-props" class="headerlink" title="1: props"></a>1: props</h2><h3 id="使用组件标签时"><a href="#使用组件标签时" class="headerlink" title="使用组件标签时"></a>使用组件标签时</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;MyComponent name=<span class="string">'tom'</span> :age=<span class="string">'3'</span> :setName=<span class="string">'setName'</span>&gt;&lt;<span class="regexp">/MyComponent&gt;</span></span><br><span class="line"><span class="regexp">&lt;my-component name='tom' :age='3' :set-name='setName'&gt;&lt;/my</span>-component&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="定义-MyComponent-时"><a href="#定义-MyComponent-时" class="headerlink" title="定义 MyComponent 时"></a>定义 MyComponent 时</h3><ol>
+<li>在组件内声明所有的 props</li>
+<li>方式一: 只指定名称<br><code>props: [&#39;name&#39;, &#39;age&#39;, &#39;setName&#39;]</code></li>
+<li>方式二: 指定名称和类型</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">props: &#123;</span><br><span class="line">name: <span class="built_in">String</span>,</span><br><span class="line">age: <span class="built_in">Number</span>,</span><br><span class="line">setNmae: <span class="built_in">Function</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>方式三: 指定名称/类型/必要性/默认值</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">props: &#123;</span><br><span class="line">name: &#123;type: String, required: true, default:xxx&#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>此方式用于父组件与子组件之间传递数据</li>
+<li>所有标签属性都会成为组件对象的属性, 模板页面可以直接引用 3)问题:<ul>
+<li>如果需要向非子后代传递数据必须多层逐层传递</li>
+<li>兄弟组件间也不能直接 props 通信, 必须借助父组件才可以</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-vue-自定义事件"><a href="#2-vue-自定义事件" class="headerlink" title="2: vue 自定义事件"></a>2: vue 自定义事件</h2><h3 id="原生-DOM-事件"><a href="#原生-DOM-事件" class="headerlink" title="原生 DOM 事件"></a>原生 DOM 事件</h3><ol>
+<li><p>绑定事件监听</p>
+<ul>
+<li>事件名称(事件名是固定的，有限的 n 个事件)</li>
+<li>事件回调函数</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.body.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>触发事件/分发事件</p>
+<ul>
+<li>当用户做了某些操作（点击按钮，移动鼠标…），浏览器会自动触发事件</li>
+<li>数据：event 对象</li>
+</ul>
+</li>
+</ol>
+<h3 id="vue-自定义事件"><a href="#vue-自定义事件" class="headerlink" title="vue 自定义事件"></a>vue 自定义事件</h3><ol>
+<li><p>绑定事件监听</p>
+<ul>
+<li>事件名称（任意的，但是不会和原生 DOM 事件相同）</li>
+<li>事件回调函数</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;MyComponent @my-event=<span class="string">"callback"</span> /&gt;</span><br><span class="line">&lt;MyComponent @xxx=<span class="string">"callback"</span> /&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>触发事件/分发事件</p>
+<ul>
+<li>手动触发：<code>this.$emit(事件名称[, 事件参数1, 事件参数2...])</code><ul>
+<li><code>this.$emit(eventName[, arg1, arg2...])</code></li>
+<li>[]代表可选值（可传可不传）</li>
+</ul>
+</li>
+<li>数据：arg1, arg2…</li>
+</ul>
+</li>
+<li><p>绑定事件方式</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 方式一</span></span><br><span class="line">&lt;MyComponent @my-event=<span class="string">"callback"</span> /&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方式二</span></span><br><span class="line">&lt;MyComponent ref=<span class="string">"xxx"</span> /&gt;</span><br><span class="line"></span><br><span class="line">mounted() &#123;</span><br><span class="line">  <span class="keyword">this</span>.$refs.xxx.$on(<span class="string">'my-event'</span>, callback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>触发事件方式: <code>this.$emit(eventName[, arg1, arg2...])</code></p>
+</li>
+<li><p>API</p>
+<ul>
+<li><code>this.$on(eventName, callback)</code> 绑定持久事件</li>
+<li><code>this.$once(eventName, callback)</code> 绑定一次性事件</li>
+<li><code>this.$off(eventName, callback)</code> 解绑事件</li>
+<li><code>this.$emit(eventName[, arg1, arg2...])</code> 触发事件</li>
+</ul>
+</li>
+<li><p>注意：绑定自定义事件的组件对象 A，那么触发事件组件对象也必须是 A，其他组件不能触发（哪个组件绑定事件，只有这个组件可以触发，其他组件触发不了）</p>
+</li>
+<li><p>作用：用于子组件向父组件通信</p>
+</li>
+</ul>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>用来实现子组件向父组件通信的方式, 功能类似于函数类型的 props</li>
+<li>隔代组件或兄弟组件间通信此种方式不合适</li>
+<li>实现流程<ul>
+<li>父组件:<ul>
+<li>组件标签属性或 mounted(): 给子组件对象绑定事件监听, 用于接收数据</li>
+<li>在 beforeDestroy(): 通过子组件对象解绑对应的事件监听</li>
+</ul>
+</li>
+<li>子组件: 通过当前组件对象分发事件, 传递数据值</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-全局事件总线"><a href="#3-全局事件总线" class="headerlink" title="3: 全局事件总线"></a>3: 全局事件总线</h2><ul>
+<li><p>原理：基于自定义事件，解决自定义事件痛点</p>
+</li>
+<li><p>自定义事件痛点：哪个组件绑定事件，只有这个组件可以触发，其他组件触发不了</p>
+<ul>
+<li>导致结果只能实现子组件向父组件通信</li>
+</ul>
+</li>
+<li><p>目的：实现所有组件任意通信</p>
+</li>
+<li><p>解决：给任意组件绑定事件，能由任意组件触发事件</p>
+</li>
+<li><p>全局事件总线 / 全局事件对象</p>
+<ul>
+<li><code>$globalEventBus</code> 用来统一绑定事件或者触发事件的对象</li>
+</ul>
+</li>
+<li><p>作用：可以用来实现任意组件通信</p>
+<ul>
+<li>通常用于：兄弟/祖孙 （一般父子组件用 props 最方便）</li>
+</ul>
+</li>
+</ul>
+<h3 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h3><ol>
+<li><p>Vue 原型对象上包含事件处理的方法</p>
+<ul>
+<li>$on(eventName, listener): 绑定自定义事件监听</li>
+<li>$emit(eventName, data): 分发自定义事件</li>
+<li>$off(eventName): 解绑自定义事件监听</li>
+<li>$once(eventName, listener): 绑定事件监听, 但只能处理一次</li>
+</ul>
+</li>
+<li><p>所有组件对象的原型对象的原型对象就是 Vue 的原型对象</p>
+<ul>
+<li>a.所有组件对象都能看到 Vue 原型对象上的属性和方法</li>
+<li>b.Vue.prototype.$bus = new Vue(), 所有的组件对象都能看到$bus 这个属性对象</li>
+</ul>
+</li>
+<li><p>全局事件总线</p>
+<ul>
+<li>a.包含事件处理相关方法的对象(只有一个)</li>
+<li>b.所有的组件都可以得到</li>
+</ul>
+</li>
+</ol>
+<h3 id="Vue-中全局事件总线-语法分析"><a href="#Vue-中全局事件总线-语法分析" class="headerlink" title="Vue 中全局事件总线_语法分析"></a>Vue 中全局事件总线_语法分析</h3><h3 id="Vue-中全局事件总线-流程分析"><a href="#Vue-中全局事件总线-流程分析" class="headerlink" title="Vue 中全局事件总线_流程分析"></a>Vue 中全局事件总线_流程分析</h3><h3 id="指定事件总线对象"><a href="#指定事件总线对象" class="headerlink" title="指定事件总线对象"></a>指定事件总线对象</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  beforeCreate() &#123;</span><br><span class="line">    <span class="comment">// 尽量早的执行挂载全局事件总线对象的操作</span></span><br><span class="line">    Vue.prototype.$globalEventBus = <span class="keyword">this</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;).$mount(<span class="string">"#root"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="绑定事件监听"><a href="#绑定事件监听" class="headerlink" title="绑定事件监听"></a>绑定事件监听</h3><p><code>this.$globalEventBus.$on(&#39;deleteTodo&#39;, this.deleteTodo)</code></p>
+<h3 id="分发事件监听"><a href="#分发事件监听" class="headerlink" title="分发事件监听"></a>分发事件监听</h3><p><code>this.$globalEventBus.$emit(&#39;deleteTodo&#39;, this.index)</code></p>
+<h3 id="解绑事件监听"><a href="#解绑事件监听" class="headerlink" title="解绑事件监听"></a>解绑事件监听</h3><p><code>this.$globalEventBus.$off(&#39;deleteTodo&#39;)</code></p>
+<h3 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h3><ol>
+<li><p>全局事件总线是任意关系的组件间通信(传值/数据)的解决方案</p>
+</li>
+<li><p>全局事件总线是一个对象, 有事件处理的相关方法, 在 vue 中就是 vm 对象</p>
+</li>
+<li><p>实现流程</p>
+<ul>
+<li>(1)将新创建的 vm 或最外层已有的 vm 作为总线对象保存到 Vue 的原型对象上</li>
+<li>(2)需要传值/数据的组件: 得到总线对象, 调用其$emit()分发事件, 携带数据</li>
+<li>(3)需要接收消息/数据的组件:<ul>
+<li>在 mounted()中: 得到总线对象, 调用其$on()绑定监听, 接收数据</li>
+<li>在 beforeDestroy()中: 得到总线对象, 调用其$off()解绑监听</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="4-消息订阅发布机制"><a href="#4-消息订阅发布机制" class="headerlink" title="4. 消息订阅发布机制"></a>4. 消息订阅发布机制</h2><ul>
+<li><p>API</p>
+<ul>
+<li>发布消息 PubSub.publish(msg, data);</li>
+<li>订阅消息 PubSub.subscribe(msg, callback);</li>
+<li>取消订阅消息 PubSub.unsubscribe(msg);</li>
+</ul>
+</li>
+<li><p>注意</p>
+<ul>
+<li>订阅消息只要做一次，通常在 created 中完成</li>
+<li>发布消息可以多次</li>
+</ul>
+</li>
+<li><p>适用于 祖孙/兄弟 通信</p>
+</li>
+</ul>
+<h2 id="5-插槽-slot-方式"><a href="#5-插槽-slot-方式" class="headerlink" title="5. 插槽(slot 方式)"></a>5. 插槽(slot 方式)</h2><ul>
+<li>此方式用于父组件向子组件传递`带数据的标签</li>
+</ul>
+<h3 id="默认插槽（没有名称的插槽）"><a href="#默认插槽（没有名称的插槽）" class="headerlink" title="默认插槽（没有名称的插槽）"></a>默认插槽（没有名称的插槽）</h3><p>template 模板数据就会以 slot 方式传入 Child 组件</p>
+<ul>
+<li>注意：要传入给子组件的数据都要在 Child 标签内部</li>
+<li>问题：子组件不能选择位置渲染，默认标签只能渲染到一个位置</li>
+<li>适用于只有一个标签数据</li>
+</ul>
+<p>父组件定义标签数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;Child&gt;</span><br><span class="line">   &lt;template&gt;</span><br><span class="line">      &lt;h3&gt;子组件标题~~~&lt;&#x2F;h3&gt;</span><br><span class="line">    &lt;&#x2F;template&gt;</span><br><span class="line">    &lt;template&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &lt;li v-for&#x3D;&quot;person in persons&quot; :key&#x3D;&quot;person.id&quot;&gt;</span><br><span class="line">          &#123;&#123; person.name &#125;&#125;</span><br><span class="line">        &lt;&#x2F;li&gt;</span><br><span class="line">      &lt;&#x2F;ul&gt;</span><br><span class="line">    &lt;&#x2F;template&gt;</span><br><span class="line">&lt;&#x2F;Child&gt;</span><br></pre></td></tr></table></figure>
+
+<p>子组件接收使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;slot&gt;&lt;&#x2F;slot&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="具名-命名插槽"><a href="#具名-命名插槽" class="headerlink" title="具名/命名插槽"></a>具名/命名插槽</h3><ul>
+<li>父组件通过给模板标签取一个属性：v-slot:xxx</li>
+<li>子组件就能通过属性来渲染指定的模板标签</li>
+<li>用法：<ul>
+<li><code>&lt;template slot=&quot;list&quot;&gt;&lt;/template&gt;</code> 即将废弃（在未来的新版本，不能使用）</li>
+<li><code>&lt;template v-slot:title&gt;&lt;/template&gt;</code> 2.6 版本推荐使用</li>
+<li><code>&lt;template #title&gt;&lt;/template&gt;</code>是上面这种的简写。 2.6 版本推荐使用</li>
+</ul>
+</li>
+<li>问题：父组件有父组件作用域，只能读取使用当前作用域数据;子组件有子组件作用域，只能读取使用当前作用域数据;父组件通常情况下是不能读取子组件数据使用的。</li>
+<li>适用于有多个标签数据</li>
+</ul>
+<p>父组件定义标签数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;Child&gt;</span><br><span class="line">      &lt;!-- &lt;template v-slot:title&gt; --&gt;</span><br><span class="line">      &lt;template #title&gt;</span><br><span class="line">      &lt;!-- &lt;template slot&#x3D;&quot;title&quot;&gt; --&gt;</span><br><span class="line">      &lt;h3&gt;子组件标题~~~&lt;&#x2F;h3&gt;</span><br><span class="line">      &lt;&#x2F;template&gt;</span><br><span class="line">      &lt;!-- &lt;template v-slot:list&gt; --&gt;</span><br><span class="line">      &lt;template #list&gt;</span><br><span class="line">      &lt;!-- &lt;template slot&#x3D;&quot;list&quot;&gt; --&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">          &lt;li v-for&#x3D;&quot;person in persons&quot; :key&#x3D;&quot;person.id&quot;&gt;</span><br><span class="line">            &#123;&#123; person.name &#125;&#125;</span><br><span class="line">          &lt;&#x2F;li&gt;</span><br><span class="line">        &lt;&#x2F;ul&gt;</span><br><span class="line">      &lt;&#x2F;template&gt;</span><br><span class="line">&lt;&#x2F;Child&gt;</span><br></pre></td></tr></table></figure>
+
+<p>子组件接受使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;!-- 标题 --&gt;</span><br><span class="line">    &lt;!-- 专门接受父组件传递的标签数据~ --&gt;</span><br><span class="line">    &lt;slot name&#x3D;&quot;title&quot;&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;slot name&#x3D;&quot;list&quot;&gt;&lt;&#x2F;slot&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="作用域插槽"><a href="#作用域插槽" class="headerlink" title="作用域插槽"></a>作用域插槽</h3><p>能够使用子组件数据渲染模板，在传递给子组件（父组件数据也可以使用）</p>
+<ul>
+<li>强制绑定 persons 数据 （会将子组件 persons 数据传递父组件）</li>
+<li>父组件需要声明接受子组件传递的数据</li>
+</ul>
+<p>父组件声明接受数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;Child&gt;</span><br><span class="line">  &lt;template #title&#x3D;&quot;data&quot;&gt;&#123;&#123;data.perons&#125;&#125;&lt;&#x2F;template&gt;</span><br><span class="line">  &lt;template #title&#x3D;&quot;&#123; persons &#125;&quot;&gt;&#123;&#123;persons&#125;&#125;&lt;&#x2F;template&gt;</span><br><span class="line">&lt;&#x2F;Child&gt;</span><br></pre></td></tr></table></figure>
+
+<p>子组件传递数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;slot name&#x3D;&quot;title&quot; :persons&#x3D;&quot;person&quot;&gt;&lt;&#x2F;slot&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>适用于有多个标签数据，并且要接受子组件数据渲染</li>
+</ul>
+<h2 id="6-vuex-后面单独讲"><a href="#6-vuex-后面单独讲" class="headerlink" title="6. vuex(后面单独讲)"></a>6. vuex(后面单独讲)</h2></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">HymSoCute</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yoursite.com/2020/08/21/vue%E7%BB%84%E4%BB%B6%E5%8C%96%E7%BC%96%E7%A8%8B/">http://yoursite.com/2020/08/21/vue%E7%BB%84%E4%BB%B6%E5%8C%96%E7%BC%96%E7%A8%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yoursite.com" target="_blank">西瓜太郎没有瓜</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/vue/">vue</a></div><div class="post_share"><div class="social-share" data-image="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&amp;quality=100&amp;size=b4000_4000&amp;sec=1596938765&amp;di=10038ef36505f86c5d8cede6ff9c21e7&amp;src=http://b.hiphotos.baidu.com/zhidao/pic/item/a2cc7cd98d1001e9b0d7d104ba0e7bec55e797d6.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/08/09/vue%E6%A0%B8%E5%BF%83/"><img class="next-cover" data-src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&amp;quality=100&amp;size=b4000_4000&amp;sec=1596938765&amp;di=10038ef36505f86c5d8cede6ff9c21e7&amp;src=http://b.hiphotos.baidu.com/zhidao/pic/item/a2cc7cd98d1001e9b0d7d104ba0e7bec55e797d6.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Vue 核心</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/08/09/vue核心/" title="Vue 核心"><img class="relatedPosts_cover" data-src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1596938765&di=10038ef36505f86c5d8cede6ff9c21e7&src=http://b.hiphotos.baidu.com/zhidao/pic/item/a2cc7cd98d1001e9b0d7d104ba0e7bec55e797d6.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-09</div><div class="relatedPosts_title">Vue 核心</div></div></a></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 By HymSoCute</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
